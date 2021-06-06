@@ -178,7 +178,7 @@ def register():
 
     if config.site.require_invite_code:
         if invite_code is None:
-            return jsonify(msg="E-mail is mandatory"), 401
+            return jsonify(msg="Invalid invite code"), 401
         try:
             InviteCode.get_valid(invite_code)
         except InviteCode.DoesNotExist:
