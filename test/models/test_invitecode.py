@@ -30,3 +30,15 @@ def test_an_invite_code_present_in_the_db_is_valid(
     app, real_invite_code: InviteCode
 ) -> None:
     assert InviteCode.get_valid(real_invite_code.code)
+
+
+def test_generate_random_code() -> None:
+    number_of_codes = 5
+    code_set = {InviteCode.generate_random_code() for _ in range(number_of_codes)}
+    assert len(code_set) == number_of_codes
+
+
+def test_generated_codes_are_alphanumeric_and_32_characters() -> None:
+    code = InviteCode.generate_random_code()
+    assert code.isalnum()
+    assert len(code) == 32

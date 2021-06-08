@@ -2,7 +2,6 @@
 import time
 import re
 import datetime
-import random
 from io import BytesIO
 
 from peewee import fn, JOIN
@@ -386,9 +385,7 @@ def invitecodes(page):
             # The admin has typed in a particular code.
             code = code_creation_form.code.data
         else:
-            code = "".join(
-                random.choice("abcdefghijklmnopqrstuvwxyz0123456789") for _ in range(32)
-            )
+            code = InviteCode.generate_random_code()
 
         user_id = current_user.uid
         expires = code_creation_form.expires.data or None

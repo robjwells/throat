@@ -2,6 +2,7 @@
 import datetime
 from enum import IntEnum
 import functools
+import random
 import sys
 from flask import g
 from flask_redis import FlaskRedis
@@ -777,6 +778,12 @@ class InviteCode(BaseModel):
             )
             .where(InviteCode.max_uses > InviteCode.uses)
             .get()
+        )
+
+    @staticmethod
+    def generate_random_code() -> str:
+        return "".join(
+            random.choice("abcdefghijklmnopqrstuvwxyz0123456789") for _ in range(32)
         )
 
     def __repr__(self):

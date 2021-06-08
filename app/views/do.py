@@ -5,7 +5,6 @@ import re
 import time
 import datetime
 import uuid
-import random
 from collections import defaultdict
 from flask import Blueprint, redirect, url_for, session, abort, jsonify, current_app
 from flask import request
@@ -2291,9 +2290,7 @@ def invite_codes():
     if (maxcodes - created) <= 0:
         return redirect("/settings/invite")
 
-    code = "".join(
-        random.choice("abcdefghijklmnopqrstuvwxyz0123456789") for _ in range(32)
-    )
+    code = InviteCode.generate_random_code()
     InviteCode.create(user=current_user.uid, code=code, expires=None, max_uses=1)
     return redirect("/settings/invite")
 
