@@ -379,20 +379,20 @@ def invitecodes(page):
     invite_form.maxcodes.data = config.site.invite_max
     invite_form.minlevel.data = config.site.invite_level
 
-    form = CreateInviteCodeForm()
+    code_creation_form = CreateInviteCodeForm()
 
-    if form.validate_on_submit():
-        if form.code.data:
+    if code_creation_form.validate_on_submit():
+        if code_creation_form.code.data:
             # The admin has typed in a particular code.
-            code = form.code.data
+            code = code_creation_form.code.data
         else:
             code = "".join(
                 random.choice("abcdefghijklmnopqrstuvwxyz0123456789") for _ in range(32)
             )
 
         user_id = current_user.uid
-        expires = form.expires.data or None
-        max_uses = form.uses.data
+        expires = code_creation_form.expires.data or None
+        max_uses = code_creation_form.uses.data
 
         InviteCode.create(
             user=user_id,
@@ -414,7 +414,7 @@ def invitecodes(page):
             elif update_form.etype.data == "never" or update_form.expires.data is None:
                 expires = None
             else:
-                expires = form.expires.data
+                expires = code_creation_form.expires.data
             InviteCode.update(expires=expires).where(InviteCode.id << ids).execute()
         return redirect(url_for("admin.invitecodes", page=page))
 
@@ -423,8 +423,8 @@ def invitecodes(page):
         useinvitecodeform=invite_form,
         invite_codes=invite_codes,
         page=page,
-        error=misc.get_errors(form, True),
-        form=form,
+        error=misc.get_errors(code_creation_form, True),
+        form=code_creation_form,
         update_form=update_form,
     )
 
