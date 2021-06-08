@@ -382,20 +382,24 @@ def invitecodes(page):
     form = CreateInviteCodeForm()
 
     if form.validate_on_submit():
-        invite = InviteCode()
-        invite.user = current_user.uid
         if form.code.data:
-            invite.code = form.code.data
+            # The admin has typed in a particular code.
+            code = form.code.data
         else:
-            invite.code = "".join(
+            code = "".join(
                 random.choice("abcdefghijklmnopqrstuvwxyz0123456789") for _ in range(32)
             )
 
-        if form.expires.data:
-            invite.expires = form.expires.data
+        user_id = current_user.uid
+        expires = form.expires.data or None
+        max_uses = form.uses.data
 
-        invite.max_uses = form.uses.data
-        invite.save()
+        InviteCode.create(
+            user=user_id,
+            code=code,
+            max_uses=max_uses,
+            expires=expires,
+        )
         return redirect(url_for("admin.invitecodes", page=page))
 
     if update_form.validate_on_submit():
